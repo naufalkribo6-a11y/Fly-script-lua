@@ -1,0 +1,90 @@
+--[[ 
+    FLY V3 | Created by: tubles93 😈
+    Pure Custom UI (No Library) - Ultra Lightweight
+    Key: dyton txt
+]]
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local FlyBtn = Instance.new("TextButton")
+local SpeedInput = Instance.new("TextBox")
+local CloseBtn = Instance.new("TextButton")
+
+-- Setup GUI
+ScreenGui.Name = "FlyV3_tubles93"
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(150, 0, 0) -- MERAH DARAH 😈
+MainFrame.Position = UDim2.new(0.3, 0, 0.4, 0)
+MainFrame.Size = UDim2.new(0, 200, 0, 150)
+MainFrame.Active = true
+MainFrame.Draggable = true -- BISA DIGERAKIN SESUAI MAU LO!
+
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Text = "FLY V3 | tubles93"
+Title.TextColor3 = Color3.new(1,1,1)
+Title.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+
+-- Fitur Fly Logic
+local flying = false
+local speed = 50
+local lp = game.Players.LocalPlayer
+
+FlyBtn.Name = "FlyBtn"
+FlyBtn.Parent = MainFrame
+FlyBtn.Position = UDim2.new(0.1, 0, 0.3, 0)
+FlyBtn.Size = UDim2.new(0, 160, 0, 35)
+FlyBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+FlyBtn.Text = "Fly: OFF"
+FlyBtn.TextColor3 = Color3.new(1, 0, 0)
+FlyBtn.Font = Enum.Font.SourceSansBold
+
+FlyBtn.MouseButton1Click:Connect(function()
+    flying = not flying
+    FlyBtn.Text = flying and "Fly: ON 🚀" or "Fly: OFF"
+    FlyBtn.TextColor3 = flying and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
+    
+    if flying then
+        local p = lp.Character or lp.CharacterAdded:Wait()
+        local root = p:WaitForChild("HumanoidRootPart")
+        local bg = Instance.new("BodyGyro", root)
+        local bv = Instance.new("BodyVelocity", root)
+        bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+        bg.P = 9e4
+        bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+        
+        task.spawn(function()
+            while flying do
+                bg.cframe = workspace.CurrentCamera.CFrame
+                bv.velocity = workspace.CurrentCamera.CFrame.LookVector * speed
+                task.wait()
+            end
+            bg:Destroy()
+            bv:Destroy()
+        end)
+    end
+end)
+
+SpeedInput.Parent = MainFrame
+SpeedInput.Position = UDim2.new(0.1, 0, 0.65, 0)
+SpeedInput.Size = UDim2.new(0, 160, 0, 30)
+SpeedInput.PlaceholderText = "Speed (Default: 50)"
+SpeedInput.Text = ""
+SpeedInput.FocusLost:Connect(function()
+    speed = tonumber(SpeedInput.Text) or 50
+end)
+
+CloseBtn.Parent = MainFrame
+CloseBtn.Position = UDim2.new(0.85, 0, 0, 0)
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Text = "X"
+CloseBtn.BackgroundColor3 = Color3.new(0,0,0)
+CloseBtn.TextColor3 = Color3.new(1,1,1)
+CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+
+print("Fly V3 Loaded, Twin! 😈")
